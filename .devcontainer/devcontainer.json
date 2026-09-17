@@ -1,0 +1,35 @@
+{
+  "name": "Memory Debug Challenge (C, Linux toolchain)",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+
+  // gdb/ptrace 가 컨테이너 안에서 정상 동작하도록 권한 부여.
+  "runArgs": [
+    "--cap-add=SYS_PTRACE",
+    "--security-opt", "seccomp=unconfined"
+  ],
+
+  // 프로젝트를 컨테이너의 /work 에 마운트하고 그 폴더를 작업 폴더로.
+  "workspaceMount": "source=${localWorkspaceFolder},target=/work,type=bind",
+  "workspaceFolder": "/work",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.makefile-tools"
+      ],
+      "settings": {
+        "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+        "C_Cpp.default.cStandard": "c11",
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  // 컨테이너 생성 후 툴 버전 확인(선택).
+  "postCreateCommand": "gcc --version | head -1; gdb --version | head -1"
+}
