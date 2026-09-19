@@ -59,7 +59,7 @@ static Rec *rec_new(int id, const char *name) {
     Rec *r = malloc(sizeof *r);
     if (!r) { perror("malloc"); exit(1); }
     r->id = id;
-    r->name = malloc(strlen(name) + 1);
+    r->name = malloc(strlen(name) + 1); //strlen()은 널문자 직전까지만 카운트하기 때문에 +1 해줘야 한다. -> 안하면 오버플로우
     if (!r->name) { perror("malloc"); exit(1); }
     strcpy(r->name, name);
     return r;
@@ -76,7 +76,7 @@ static void directory_add(Directory *d, int id, const char *name) {
 static void directory_sort_by_name(Directory *d) {
     for (int i = 0; i < d->count; i++) {
         for (int j = i + 1; j < d->count; j++) {
-            if (strcmp(d->by_name[i]->name, d->by_name[j]->name) > 0) {
+            if (strcmp(d->by_name[i]->name, d->by_name[j]->name) > 0) { //string compare 
                 Rec *t = d->by_name[i];
                 d->by_name[i] = d->by_name[j];
                 d->by_name[j] = t;
@@ -104,14 +104,11 @@ static void directory_free(Directory *d) {
         free(d->by_id[i]->name);
         free(d->by_id[i]);                 
     }
-    for (int i = 0; i < d->count; i++) {
-        free(d->by_name[i]);               
-    }
     d->count = 0;
 }
 
 int main(void) {
-    Directory dir = { .count = 0 };
+    Directory dir = { .count = 0 }; //초기화 안 한 곳에서는 NULL 들어감 
 
     directory_add(&dir, 3, "carol");
     directory_add(&dir, 1, "alice");

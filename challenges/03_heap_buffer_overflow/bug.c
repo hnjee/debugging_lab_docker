@@ -84,9 +84,9 @@ need는 호출하는 쪽이 요청하는 최소한의 크기이고, 실제로 �
     역시 "범용 함수"로서 안전하게 만들어둔 것 
     */
     while (newcap < need) newcap *= 2;
+    printf("======%d\n", need);
+    int *p = realloc(l->data, l->cap * sizeof(int));
 
-    int *p = realloc(l->data, newcap * sizeof(int));
-    //printf("======%d\n", need);
     if (!p) { perror("realloc"); free(l->data); exit(1); }
 
     l->data = p; //이걸 해줘야 새로 할당한 메모리 공간을 제대로 가리키게 됨 
