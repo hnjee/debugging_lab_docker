@@ -54,7 +54,11 @@
 #include <stdlib.h>
 
 #define ROWS 14
-enum { SIZE = ROWS * (ROWS + 1) / 2 };   /* 0..ROWS-1 행을 담는 정확한 크기 */
+enum { SIZE = ROWS * (ROWS + 1) / 2 };   /* 0..ROWS-1 행을 담는 정확한 크기 */ //105
+/* 질문1: 왜 size를 enum으로 선언했을까?
+    매크로는 전처리 단계에서 사라지기 때문에 gdb같은 디버거로 실행하면 size 조회 안됨 
+    enum은 타입 체크 가능 
+*/
 
 /* 행 i, 열 j 의 삼각 인덱스 */
 static int tri_index(int i, int j) {
@@ -85,7 +89,9 @@ static long row_sum(const int *tri, int i) {
 
 static void print_row(const int *tri, int i) {
     printf("row %2d:", i);
-    for (int j = 0; j <= i; j++) printf(" %d", tri[tri_index(i, j)]);
+    for (int j = 0; j <= i; j++) {
+        printf(" %d", tri[tri_index(i, j)]);
+    }
     printf("   (sum=%ld)\n", row_sum(tri, i));
 }
 
@@ -94,7 +100,9 @@ int main(void) {
 
     build_pascal(tri, ROWS);          
 
-    for (int i = 0; i < ROWS; i++) print_row(tri, i);
+    for (int i = 0; i < ROWS; i++) {
+        print_row(tri, i);
+    }
 
     printf("SIZE = %d\n", SIZE);
 
