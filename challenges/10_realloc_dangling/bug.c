@@ -61,7 +61,12 @@ static void eb_init(EditBuffer *e) {
 }
 
 static void eb_snapshot(EditBuffer *e) {
-    if (e->undo_n < MAX_UNDO) e->undo[e->undo_n++] = e->data;
+    if (e->undo_n < MAX_UNDO) {
+        int *p = malloc(e->len * sizeof(int));
+        if(!p){ perror("malloc"); exit(1); }
+        memcpy(p, e->data, e->len * sizeof(int));
+        e->undo[e->undo_n++] = p;
+    }
 }
 
 static void eb_grow(EditBuffer *e, size_t need) {
@@ -80,12 +85,13 @@ static void eb_push(EditBuffer *e, int v) {
 
 static void eb_free(EditBuffer *e) {
     free(e->data);
+    e->data = NULL;
     free(e->clipboard);
-    for (int i = 0; i < e->undo_n; i++) {
-        free(e->undo[i]);           
+    e->clipboard = NULL;
+    for(int i=0; i<e->undo_n; i++){
+        free(e->undo[i]);
     }
     e->undo_n = 0;
-    e->data = NULL;
 }
 
 int main(void) {

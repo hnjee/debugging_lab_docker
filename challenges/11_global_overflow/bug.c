@@ -51,6 +51,10 @@ static unsigned char arena[ARENA_SIZE];    /* 전역(.bss) 아레나 */
 static size_t arena_off = 0;
 
 static void *arena_alloc(size_t n) {
+    fprintf(stderr, "3. arena_off: %zu\n", arena_off);
+    if (ARENA_SIZE - arena_off < n) {
+        return NULL;
+    }
     void *p = &arena[arena_off];
     arena_off += n;
     return p;
@@ -58,8 +62,12 @@ static void *arena_alloc(size_t n) {
 
 static char *intern(const char *s) {
     size_t n = strlen(s) + 1;
+    fprintf(stderr, "2. n: %zu\n", n);    
     char *dst = arena_alloc(n);
-    memcpy(dst, s, n);                      /* 경계를 넘은 위치면 여기서 크래시 */
+    if (dst == NULL){
+        return NULL;
+    }
+    memcpy(dst, s, n);                      
     return dst;
 }
 
@@ -71,14 +79,19 @@ int main(void) {
     };
     int nwords = (int)(sizeof(words) / sizeof(words[0]));
 
-    char *last = NULL;
+    char *last = NULL; 
     long total = 0;
     for (int i = 0; i < 100000; i++) {
+        fprintf(stderr, "1. %s-%d\n", words[i % nwords], i);      
         char buf[32];
         snprintf(buf, sizeof buf, "%s-%d", words[i % nwords], i);
-        last = intern(buf);                 
-        total += (long)strlen(last);
-    }
+        char *temp = intern(buf); 
+        if(temp == NULL){
+            break;
+        }
+        last = temp;                
+        total += (long)strlen(last);   
+    }  
 
     printf("interned, last=%s total_len=%ld\n", last, total);
     return 0;

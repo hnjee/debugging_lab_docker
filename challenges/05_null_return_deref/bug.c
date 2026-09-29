@@ -48,7 +48,7 @@ static void cfg_set(Config *c, const char *k, const char *v) {
 
 static const char *cfg_get(const Config *c, const char *k) {
     for (int i = 0; i < c->n; i++)
-        if (strcmp(c->keys[i], k) == 0) return c->vals[i];
+        if (strcmp(c->keys[i], k) == 0) return c->vals[i]; //두 개의 문자열을 비교하여 일치 여부와 전후 관계를 정수로 반환
     return NULL;                       /* 없는 키 → NULL */
 }
 
@@ -64,8 +64,11 @@ static void expand(const Config *c, const char *tmpl, char *out, size_t outcap) 
             memcpy(key, p + 2, kl);
             key[kl] = '\0';
 
-            const char *v = cfg_get(c, key);      
-            size_t vl = strlen(v);                 
+            const char *v = cfg_get(c, key);
+            if(v==NULL){
+                v = "";
+            }
+            size_t vl = strlen(v);  //문자열 길이 반환               
             if (o + vl < outcap) { memcpy(out + o, v, vl); o += vl; }
             p = end + 1;
         } else {

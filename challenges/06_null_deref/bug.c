@@ -48,11 +48,15 @@ static char *skip_ws(char *s) {
 static void parse_headers(char *text, Headers *h) {
     for (char *line = strtok(text, "\n"); line != NULL; line = strtok(NULL, "\n")) {
         char *colon = strchr(line, ':');   
-
-        *colon = '\0';                    
-        char *key = line;
+        fprintf(stderr, "line=[%s] colon=%p\n", line, (void*)colon);
+    
+        if(colon == NULL){
+            continue;
+        }
+        *colon = '\0';
+        char *key = line;                    
         char *val = skip_ws(colon + 1);
-
+        
         if (h->count < MAX_HEADERS) {
             h->keys[h->count] = key;
             h->vals[h->count] = val;
