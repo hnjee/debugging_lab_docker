@@ -74,14 +74,15 @@ static void job_release(Job *j) {
 }
 
 static Job *filter_jobs(Job *head, int threshold, Audit *audit) {
-    Job *keep = NULL, *keep_tail = NULL;
+    Job *keep = NULL, *keep_tail = NULL; //keep 시작점, keep_tail 끝점
     Job *cur = head;
 
     while (cur != NULL) {
         if (cur->priority < threshold) {
-            audit_add(audit, cur->id);   
-            job_release(cur);            
-            cur = cur->next;             
+            audit_add(audit, cur->id);
+            Job *temp = cur;  
+            cur = cur->next;    
+            job_release(temp);                      
         } else {
             Job *nx = cur->next;
             cur->next = NULL;

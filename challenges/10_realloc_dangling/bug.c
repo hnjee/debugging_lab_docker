@@ -90,6 +90,7 @@ static void eb_free(EditBuffer *e) {
     e->clipboard = NULL;
     for(int i=0; i<e->undo_n; i++){
         free(e->undo[i]);
+        //e->undo[i]=NULL; //e->undo_n = 0;하면 안해도됨 
     }
     e->undo_n = 0;
 }

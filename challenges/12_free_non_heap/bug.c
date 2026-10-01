@@ -65,8 +65,7 @@ static void parse_row(Row *r, const char *csv) {
     if (!r->base) { perror("strdup"); exit(1); }
     r->n = 0;
 
-    for (char *tok = strtok(r->base, ","); tok && r->n < MAX_FIELDS;
-         tok = strtok(NULL, ",")) {
+    for (char *tok = strtok(r->base, ","); tok && r->n < MAX_FIELDS; tok = strtok(NULL, ",")) {
         r->fields[r->n++] = tok;  /* fields[0]=base, 나머지는 내부 포인터 */
     }
 }
@@ -78,9 +77,11 @@ static void row_print(const Row *r) {
 }
 
 static void row_free(Row *r) {
-    for (int i = 0; i < r->n; i++) {
-        free(r->fields[i]);       
-    }
+    free(r->base);
+    r->base = NULL; 
+    // for (int i = 0; i < r->n; i++) {
+    //     r->fields[i] = NULL; //r->n=0해서 안해도됨 
+    // }
     r->n = 0;
 }
 
